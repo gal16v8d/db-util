@@ -94,7 +94,7 @@ public final class DBConnection {
     public StringBuilder processSQL(File f) throws IOException {
         String s = GralConstants.EMPTY;
         StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(f));) {
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             while ((s = br.readLine()) != null) {
                 sb.append(s);
             }
