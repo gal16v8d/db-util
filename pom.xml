@@ -2,15 +2,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>co.com.gsdd</groupId>
+	<groupId>com.gsdd</groupId>
 	<artifactId>db-util</artifactId>
 	<version>2.0.001</version>
 	<packaging>jar</packaging>
 
+	<name>db-util</name>
 	<organization>
 		<name>GSDD</name>
 	</organization>
-	<name>db-util</name>
+	
 
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
@@ -41,8 +42,8 @@
 		<jacoco.it.exec>${project.build.directory}/coverage-reports/jacoco-it.exec</jacoco.it.exec>
 		<jacoco.it.reportPath>${project.build.directory}/coverage-reports/jacoco-it</jacoco.it.reportPath>
 
-		<lombok.version>1.18.20</lombok.version>
-		<slf4j.api.version>1.7.25</slf4j.api.version>
+		<lombok.version>1.18.22</lombok.version>
+		<slf4j.api.version>1.7.32</slf4j.api.version>
 		<derby.version>10.12.1.1</derby.version>
 		<postgresql.version>42.2.12</postgresql.version>
 		<constant-util.version>2.0.001</constant-util.version>
@@ -78,13 +79,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>co.com.gsdd</groupId>
+			<groupId>com.gsdd</groupId>
 			<artifactId>constant-util</artifactId>
 			<version>${constant-util.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>co.com.gsdd</groupId>
+			<groupId>com.gsdd</groupId>
 			<artifactId>exception-util</artifactId>
 			<version>${exception-util.version}</version>
 		</dependency>
@@ -206,6 +207,9 @@
 				<groupId>net.revelc.code.formatter</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
 				<version>${mvn.format.plugin.version}</version>
+				<configuration>
+					<configFile>${project.basedir}/eclipse-java-google-style.xml</configFile>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
