@@ -29,12 +29,12 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DBConnection {
 
+  private static final DBConnection INSTANCE = new DBConnection();
+  private static final Pattern SEMICOLON_PATTERN = Pattern.compile(GralConstants.SEMICOLON);
   private Connection con;
   private PreparedStatement pst;
   private Statement st;
   private ResultSet rs;
-  private static final DBConnection INSTANCE = new DBConnection();
-  private static final Pattern SEMICOLON_PATTERN = Pattern.compile(GralConstants.SEMICOLON);
 
   public void connectDB(String driver, String url, String user, String pass) {
     try {
