@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DBConstants {
 
-    public static final String FILE = "file";
+  public static final String FILE = "file";
 }
