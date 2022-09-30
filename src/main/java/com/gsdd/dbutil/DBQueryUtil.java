@@ -12,7 +12,7 @@ public final class DBQueryUtil {
 
   /**
    * Allow to check if DB exists. Try to extract DB metadata.
-   * 
+   *
    * @param mainTable some existing table on DB.
    * @param driver connector for DB.
    * @param url
@@ -20,8 +20,8 @@ public final class DBQueryUtil {
    * @param pass
    * @return true if DB exists.
    */
-  public static boolean dbExist(String mainTable, String driver, String url, String user,
-      String pass) {
+  public static boolean dbExist(
+      String mainTable, String driver, String url, String user, String pass) {
     boolean exists = false;
     try {
       if (DBConnection.getInstance().getCon() == null) {
@@ -40,8 +40,12 @@ public final class DBQueryUtil {
       DatabaseMetaData metaData = DBConnection.getInstance().getCon().getMetaData();
       DBConnection.getInstance().setSt(DBConnection.getInstance().getCon().createStatement());
       DBConnection.getInstance()
-          .setRs(metaData.getTables(DBConnection.getInstance().getCon().getCatalog(), "APP",
-              mainTable, new String[] {"TABLE"}));
+          .setRs(
+              metaData.getTables(
+                  DBConnection.getInstance().getCon().getCatalog(),
+                  "APP",
+                  mainTable,
+                  new String[] {"TABLE"}));
       check = DBConnection.getInstance().getRs().next();
     } catch (SQLException e) {
       log.error(e.getMessage(), e);
@@ -50,5 +54,4 @@ public final class DBQueryUtil {
     }
     return check;
   }
-
 }

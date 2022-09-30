@@ -1,5 +1,9 @@
 package com.gsdd.dbutil;
 
+import com.gsdd.constants.DBConstants;
+import com.gsdd.constants.GralConstants;
+import com.gsdd.constants.LoadConstants;
+import com.gsdd.exception.TechnicalException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,10 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Pattern;
-import com.gsdd.constants.DBConstants;
-import com.gsdd.constants.GralConstants;
-import com.gsdd.constants.LoadConstants;
-import com.gsdd.exception.TechnicalException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +29,12 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DBConnection {
 
+  private static final DBConnection INSTANCE = new DBConnection();
+  private static final Pattern SEMICOLON_PATTERN = Pattern.compile(GralConstants.SEMICOLON);
   private Connection con;
   private PreparedStatement pst;
   private Statement st;
   private ResultSet rs;
-  private static final DBConnection INSTANCE = new DBConnection();
-  private static final Pattern SEMICOLON_PATTERN = Pattern.compile(GralConstants.SEMICOLON);
 
   public void connectDB(String driver, String url, String user, String pass) {
     try {
@@ -50,14 +50,16 @@ public final class DBConnection {
     try {
       if (DBConstants.FILE.equals(path.getProtocol())) {
         importFile = new File(path.toURI());
-        log.info("GetImportFile on protocol {} is {}", DBConstants.FILE,
-            importFile.getAbsolutePath());
+        log.info(
+            "GetImportFile on protocol {} is {}", DBConstants.FILE, importFile.getAbsolutePath());
       } else {
         File pos = new File(GralConstants.DOT).getAbsoluteFile();
         log.info("GetImportFile us {}", pos.getAbsolutePath());
-        importFile = new File(
-            pos.getAbsolutePath().substring(0, pos.getAbsolutePath().lastIndexOf(GralConstants.DOT))
-                + LoadConstants.IMPORT);
+        importFile =
+            new File(
+                pos.getAbsolutePath()
+                        .substring(0, pos.getAbsolutePath().lastIndexOf(GralConstants.DOT))
+                    + LoadConstants.IMPORT);
       }
     } catch (URISyntaxException e) {
       log.error(e.getMessage(), e);
@@ -68,7 +70,7 @@ public final class DBConnection {
   /**
    * Allows to process a sql file for execute all the statements on it. Normally for init/update a
    * DB.
-   * 
+   *
    * @param throwExceptionFlag if true then it stops the execution on any bad statement.
    */
   public void executeImport(Boolean throwExceptionFlag) {
@@ -129,9 +131,7 @@ public final class DBConnection {
     }
   }
 
-  /**
-   * Close DB objects (preparedstatement, resultset, etc)
-   */
+  /** Close DB objects (preparedstatement, resultset, etc). */
   public void closeQuery() {
     closeQuietly(rs);
     closeQuietly(pst);
@@ -156,5 +156,4 @@ public final class DBConnection {
   public static DBConnection getInstance() {
     return INSTANCE;
   }
-
 }

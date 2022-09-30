@@ -7,5 +7,4 @@ import lombok.NoArgsConstructor;
 public final class DBConstants {
 
   public static final String FILE = "file";
-
 }
