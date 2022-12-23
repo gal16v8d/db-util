@@ -43,7 +43,7 @@
 		<lombok.version>1.18.24</lombok.version>
 		<slf4j.api.version>1.7.36</slf4j.api.version>
 		<derby.version>10.12.1.1</derby.version>
-		<postgresql.version>42.5.0</postgresql.version>
+		<postgresql.version>42.5.1</postgresql.version>
 		<constant-util.version>2.0.1</constant-util.version>
 		<exception-util.version>2.0.1</exception-util.version>
 	</properties>
