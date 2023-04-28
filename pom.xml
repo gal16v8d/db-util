@@ -26,7 +26,7 @@
 		<!-- If true skips IT test execution -->
 		<skip.integration.tests>false</skip.integration.tests>
 		
-		<derby.version>10.12.1.1</derby.version>
+		<derby.version>10.14.2.0</derby.version>
 		<postgresql.version>42.5.1</postgresql.version>
 		<constant-util.version>2.0.3</constant-util.version>
 		<exception-util.version>2.0.3</exception-util.version>
