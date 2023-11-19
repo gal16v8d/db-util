@@ -28,8 +28,8 @@
 		
 		<derby.version>10.14.2.0</derby.version>
 		<postgresql.version>42.5.1</postgresql.version>
-		<constant-util.version>2.0.4</constant-util.version>
-		<exception-util.version>2.0.4</exception-util.version>
+		<constant-util.version>2.1.0</constant-util.version>
+		<exception-util.version>2.1.0</exception-util.version>
 	</properties>
 
 	<dependencies>
