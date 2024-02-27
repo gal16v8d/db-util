@@ -11,7 +11,7 @@
 	
 
 	<artifactId>db-util</artifactId>
-	<version>2.1.1</version>
+	<version>2.1.2</version>
 	<packaging>jar</packaging>
 
 	<name>db-util</name>
@@ -27,7 +27,7 @@
 		<skip.integration.tests>false</skip.integration.tests>
 		
 		<derby.version>10.17.1.0</derby.version>
-		<postgresql.version>42.5.1</postgresql.version>
+		<postgresql.version>42.5.5</postgresql.version>
 		<constant-util.version>2.1.0</constant-util.version>
 		<exception-util.version>2.1.0</exception-util.version>
 	</properties>
