@@ -1,6 +1,6 @@
 package com.gsdd.dbutil;
 
-import com.gsdd.constants.DBConstants;
+import com.gsdd.constants.DbConstants;
 import com.gsdd.constants.GralConstants;
 import com.gsdd.constants.LoadConstants;
 import com.gsdd.exception.TechnicalException;
@@ -27,9 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DBConnection {
+public final class DbConnection {
 
-  private static final DBConnection INSTANCE = new DBConnection();
+  private static final DbConnection INSTANCE = new DbConnection();
   private static final Pattern SEMICOLON_PATTERN = Pattern.compile(GralConstants.SEMICOLON);
   private Connection con;
   private PreparedStatement pst;
@@ -48,10 +48,10 @@ public final class DBConnection {
   private File getImportFile(URL path) {
     File importFile = null;
     try {
-      if (DBConstants.FILE.equals(path.getProtocol())) {
+      if (DbConstants.FILE.equals(path.getProtocol())) {
         importFile = new File(path.toURI());
         log.info(
-            "GetImportFile on protocol {} is {}", DBConstants.FILE, importFile.getAbsolutePath());
+            "GetImportFile on protocol {} is {}", DbConstants.FILE, importFile.getAbsolutePath());
       } else {
         File pos = new File(GralConstants.DOT).getAbsoluteFile();
         log.info("GetImportFile us {}", pos.getAbsolutePath());
@@ -85,7 +85,7 @@ public final class DBConnection {
 
   private StringBuilder readImportFile() {
     try {
-      URL path = DBConnection.class.getResource(LoadConstants.IMPORT);
+      URL path = DbConnection.class.getResource(LoadConstants.IMPORT);
       File f = getImportFile(path);
       return processSQL(f);
     } catch (Exception e) {
@@ -107,9 +107,8 @@ public final class DBConnection {
   private void executeImportScript(String[] statements, boolean throwExceptionFlag)
       throws SQLException {
     if (statements != null) {
-      int max = statements.length;
-      for (int i = 0; i < max; i++) {
-        executeQuery(statements[i], throwExceptionFlag);
+      for (String statement : statements) {
+        executeQuery(statement, throwExceptionFlag);
       }
     }
   }
@@ -153,7 +152,7 @@ public final class DBConnection {
     }
   }
 
-  public static DBConnection getInstance() {
+  public static DbConnection getInstance() {
     return INSTANCE;
   }
 }

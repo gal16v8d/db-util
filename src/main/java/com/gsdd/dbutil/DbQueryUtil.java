@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DBQueryUtil {
+public final class DbQueryUtil {
 
   /**
    * Allow to check if DB exists. Try to extract DB metadata.
@@ -24,8 +24,8 @@ public final class DBQueryUtil {
       String mainTable, String driver, String url, String user, String pass) {
     boolean exists = false;
     try {
-      if (DBConnection.getInstance().getCon() == null) {
-        DBConnection.getInstance().connectDB(driver, url, user, pass);
+      if (DbConnection.getInstance().getCon() == null) {
+        DbConnection.getInstance().connectDB(driver, url, user, pass);
       }
       exists = dbCheckMetadata(mainTable);
     } catch (Exception e) {
@@ -37,20 +37,20 @@ public final class DBQueryUtil {
   private static boolean dbCheckMetadata(String mainTable) {
     boolean check = false;
     try {
-      DatabaseMetaData metaData = DBConnection.getInstance().getCon().getMetaData();
-      DBConnection.getInstance().setSt(DBConnection.getInstance().getCon().createStatement());
-      DBConnection.getInstance()
+      DatabaseMetaData metaData = DbConnection.getInstance().getCon().getMetaData();
+      DbConnection.getInstance().setSt(DbConnection.getInstance().getCon().createStatement());
+      DbConnection.getInstance()
           .setRs(
               metaData.getTables(
-                  DBConnection.getInstance().getCon().getCatalog(),
+                  DbConnection.getInstance().getCon().getCatalog(),
                   "APP",
                   mainTable,
                   new String[] {"TABLE"}));
-      check = DBConnection.getInstance().getRs().next();
+      check = DbConnection.getInstance().getRs().next();
     } catch (SQLException e) {
       log.error(e.getMessage(), e);
     } finally {
-      DBConnection.getInstance().closeQuery();
+      DbConnection.getInstance().closeQuery();
     }
     return check;
   }
