@@ -17,19 +17,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Pattern;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DbConnection {
 
-  private static final DbConnection INSTANCE = new DbConnection();
   private static final Pattern SEMICOLON_PATTERN = Pattern.compile(GralConstants.SEMICOLON);
   private Connection con;
   private PreparedStatement pst;
@@ -42,6 +38,55 @@ public final class DbConnection {
       this.con = DriverManager.getConnection(url, user, pass);
     } catch (Exception e) {
       throw new TechnicalException(e);
+    }
+  }
+
+  /**
+   * Allows to process a sql file for execute all the statements on it. Normally for init/update a
+   * DB.
+   *
+   * @param throwExceptionFlag if true then it stops the execution on any bad statement.
+   */
+  public void executeImport(Boolean throwExceptionFlag) {
+    try {
+      StringBuilder importSQL = readImportFile();
+      String[] statements = SEMICOLON_PATTERN.split(importSQL.toString());
+      executeImportScript(statements, throwExceptionFlag);
+    } catch (Exception e) {
+      throw new TechnicalException(e.getMessage(), e);
+    }
+  }
+
+  public StringBuilder processSQL(File f) throws IOException {
+    String s = GralConstants.EMPTY;
+    StringBuilder sb = new StringBuilder();
+    try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+      while ((s = br.readLine()) != null) {
+        sb.append(s);
+      }
+    }
+    return sb;
+  }
+
+  /** Close DB objects (preparedstatement, resultset, etc). */
+  public void closeQuery() {
+    closeQuietly(rs);
+    closeQuietly(pst);
+    closeQuietly(st);
+  }
+
+  public void disconnectDB() {
+    closeQuery();
+    closeQuietly(con);
+  }
+
+  private StringBuilder readImportFile() {
+    try {
+      URL path = DbConnection.class.getResource(LoadConstants.IMPORT);
+      File f = getImportFile(path);
+      return processSQL(f);
+    } catch (Exception e) {
+      throw new TechnicalException(e.getMessage(), e);
     }
   }
 
@@ -65,43 +110,6 @@ public final class DbConnection {
       log.error(e.getMessage(), e);
     }
     return importFile;
-  }
-
-  /**
-   * Allows to process a sql file for execute all the statements on it. Normally for init/update a
-   * DB.
-   *
-   * @param throwExceptionFlag if true then it stops the execution on any bad statement.
-   */
-  public void executeImport(Boolean throwExceptionFlag) {
-    try {
-      StringBuilder importSQL = readImportFile();
-      String[] statements = SEMICOLON_PATTERN.split(importSQL.toString());
-      executeImportScript(statements, throwExceptionFlag);
-    } catch (Exception e) {
-      throw new TechnicalException(e.getMessage(), e);
-    }
-  }
-
-  private StringBuilder readImportFile() {
-    try {
-      URL path = DbConnection.class.getResource(LoadConstants.IMPORT);
-      File f = getImportFile(path);
-      return processSQL(f);
-    } catch (Exception e) {
-      throw new TechnicalException(e.getMessage(), e);
-    }
-  }
-
-  public StringBuilder processSQL(File f) throws IOException {
-    String s = GralConstants.EMPTY;
-    StringBuilder sb = new StringBuilder();
-    try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-      while ((s = br.readLine()) != null) {
-        sb.append(s);
-      }
-    }
-    return sb;
   }
 
   private void executeImportScript(String[] statements, boolean throwExceptionFlag)
@@ -130,18 +138,6 @@ public final class DbConnection {
     }
   }
 
-  /** Close DB objects (preparedstatement, resultset, etc). */
-  public void closeQuery() {
-    closeQuietly(rs);
-    closeQuietly(pst);
-    closeQuietly(st);
-  }
-
-  public void disconnectDB() {
-    closeQuery();
-    closeQuietly(con);
-  }
-
   private void closeQuietly(AutoCloseable resource) {
     if (resource != null) {
       try {
@@ -150,9 +146,5 @@ public final class DbConnection {
         log.trace(e.getMessage(), e);
       }
     }
-  }
-
-  public static DbConnection getInstance() {
-    return INSTANCE;
   }
 }

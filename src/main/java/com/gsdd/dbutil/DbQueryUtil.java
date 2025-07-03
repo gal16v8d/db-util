@@ -14,43 +14,31 @@ public final class DbQueryUtil {
    * Allow to check if DB exists. Try to extract DB metadata.
    *
    * @param mainTable some existing table on DB.
-   * @param driver connector for DB.
-   * @param url
-   * @param user
-   * @param pass
+   * @param db database connection object
    * @return true if DB exists.
    */
-  public static boolean dbExist(
-      String mainTable, String driver, String url, String user, String pass) {
+  public static boolean dbExist(String mainTable, DbConnection db) {
     boolean exists = false;
     try {
-      if (DbConnection.getInstance().getCon() == null) {
-        DbConnection.getInstance().connectDB(driver, url, user, pass);
-      }
-      exists = dbCheckMetadata(mainTable);
+      exists = dbCheckMetadata(mainTable, db);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
     }
     return exists;
   }
 
-  private static boolean dbCheckMetadata(String mainTable) {
+  private static boolean dbCheckMetadata(String mainTable, DbConnection db) {
     boolean check = false;
     try {
-      DatabaseMetaData metaData = DbConnection.getInstance().getCon().getMetaData();
-      DbConnection.getInstance().setSt(DbConnection.getInstance().getCon().createStatement());
-      DbConnection.getInstance()
-          .setRs(
-              metaData.getTables(
-                  DbConnection.getInstance().getCon().getCatalog(),
-                  "APP",
-                  mainTable,
-                  new String[] {"TABLE"}));
-      check = DbConnection.getInstance().getRs().next();
+      DatabaseMetaData metaData = db.getCon().getMetaData();
+      db.setSt(db.getCon().createStatement());
+      db.setRs(
+          metaData.getTables(db.getCon().getCatalog(), "APP", mainTable, new String[] {"TABLE"}));
+      check = db.getRs().next();
     } catch (SQLException e) {
       log.error(e.getMessage(), e);
     } finally {
-      DbConnection.getInstance().closeQuery();
+      db.closeQuery();
     }
     return check;
   }
